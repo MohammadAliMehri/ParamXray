@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ParamXray Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Cyberpunk UI Wrapper -->
+  <div class="dashboard-container">
+    
+    <!-- Top Action Header -->
+    <header class="dashboard-header">
+      <div class="logo-area">
+        <img src="icon.png" alt="ParamXray Logo" class="logo-img">
+        <h1 class="logo-text">PARAM<span class="accent-text">XRAY</span></h1>
+      </div>
+      <div class="actions-area">
+        <button id="btn-analyze" class="btn btn-primary" title="Scan Current Tab DOM">
+          <span class="icon">🎯</span> Analyze Page
+        </button>
+        <button id="btn-export" class="btn btn-secondary" title="Export Captured Recon Data">
+          <span class="icon">📤</span> Export JSON
+        </button>
+      </div>
+    </header>
+
+    <!-- Scan Stats bar -->
+    <div id="stats-banner" class="stats-banner">
+      <div class="stat-indicator">
+        <span class="stat-label">TARGET:</span>
+        <span id="target-domain" class="stat-value">None</span>
+      </div>
+      <div class="stat-separator">|</div>
+      <div class="stat-indicator">
+        <span class="stat-label">STATUS:</span>
+        <span id="scan-status" class="stat-value text-green">LISTENING</span>
+      </div>
+    </div>
+
+    <!-- Tabbed Navigation -->
+    <nav class="tab-navigation">
+      <button class="tab-btn active" data-tab="overview">
+        <span class="tab-icon">📊</span> Overview
+      </button>
+      <button class="tab-btn" data-tab="params">
+        <span class="tab-icon">🔗</span> Parameters
+      </button>
+      <button class="tab-btn" data-tab="subdomains">
+        <span class="tab-icon">🌐</span> Subdomains
+      </button>
+      <button class="tab-btn" data-tab="resources">
+        <span class="tab-icon">📦</span> Resources / APIs
+      </button>
+      <button class="tab-btn" data-tab="leaks">
+        <span class="tab-icon">⚠️</span> Leaks
+        <span id="badge-leaks" class="badge bg-amber hidden">0</span>
+      </button>
+    </nav>
+
+    <!-- Tabs Content Container -->
+    <main class="tab-content-area">
+      
+      <!-- Tab 1: Overview -->
+      <section id="tab-overview" class="tab-pane active">
+        <div class="overview-grid">
+          
+          <div class="stat-card border-green">
+            <div class="card-icon">🎯</div>
+            <div class="card-info">
+              <span class="card-num" id="count-params">0</span>
+              <span class="card-label">URL Parameters</span>
+            </div>
+          </div>
+          
+          <div class="stat-card border-green">
+            <div class="card-icon">📋</div>
+            <div class="card-info">
+              <span class="card-num" id="count-forms">0</span>
+              <span class="card-label">Form Inputs</span>
+            </div>
+          </div>
+
+          <div class="stat-card border-green">
+            <div class="card-icon">🌐</div>
+            <div class="card-info">
+              <span class="card-num" id="count-subdomains">0</span>
+              <span class="card-label">Subdomains</span>
+            </div>
+          </div>
+
+          <div class="stat-card border-green">
+            <div class="card-icon">📦</div>
+            <div class="card-info">
+              <span class="card-num" id="count-resources">0</span>
+              <span class="card-label">APIs & Scripts</span>
+            </div>
+          </div>
+
+          <div class="stat-card border-amber full-width">
+            <div class="card-icon text-amber">⚠️</div>
+            <div class="card-info">
+              <span class="card-num text-amber" id="count-leaks">0</span>
+              <span class="card-label">Potential Secrets Exposed</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="banner-footer-message">
+          <p class="text-secondary">
+            ParamXray runs passively in the background. Open network resources are continuously matched. Click <strong class="text-green">Analyze Page</strong> to extract deep parameters, form inputs, local scripts, subdomains, and secrets directly from the document object model.
+          </p>
+        </div>
+      </section>
+
+      <!-- Tab 2: Parameters -->
+      <section id="tab-params" class="tab-pane">
+        <div class="section-title">Query Parameters Detected</div>
+        <div class="table-container scrollable">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Sample Value</th>
+                <th>Source Path</th>
+              </tr>
+            </thead>
+            <tbody id="list-params">
+              <!-- Dynamically Populated -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section-title margin-top">Form Fields & Inputs</div>
+        <div class="table-container scrollable">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Form ID / Name</th>
+                <th>Input Name</th>
+                <th>Type</th>
+              </tr>
+            </thead>
+            <tbody id="list-forms">
+              <!-- Dynamically Populated -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Tab 3: Subdomains -->
+      <section id="tab-subdomains" class="tab-pane">
+        <div class="section-title">In-Scope Subdomains Scraped</div>
+        <div class="list-container scrollable" id="list-subdomains">
+          <!-- Dynamically Populated -->
+        </div>
+      </section>
+
+      <!-- Tab 4: Resources / APIs -->
+      <section id="tab-resources" class="tab-pane">
+        <div class="section-title">Scripts & Network APIs (Merged)</div>
+        <div class="list-container scrollable" id="list-resources">
+          <!-- Dynamically Populated -->
+        </div>
+      </section>
+
+      <!-- Tab 5: Leaks -->
+      <section id="tab-leaks" class="tab-pane">
+        <div class="section-title text-amber">High Confidence Sensitive Leaks</div>
+        <div class="cards-list-container scrollable" id="list-leaks">
+          <!-- Dynamically Populated -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer status -->
+    <footer class="dashboard-footer">
+      <span>ParamXray v1.0.0</span>
+      <span class="pulse-text">SYSTEM SECURE</span>
+    </footer>
+
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
